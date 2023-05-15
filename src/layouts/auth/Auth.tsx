@@ -1,11 +1,8 @@
-import { useState } from 'react';
+import { useState, useContext } from 'react';
 import SocialAuth from './SocialAuth';
 import AuthForm from './AuthForm';
 import AuthFooter from './AuthFooter';
-
-type AuthProps = {
-  setToken: React.Dispatch<React.SetStateAction<string>>;
-};
+import TokenContext from '../../context/TokenContext';
 
 type UserTypes = {
   firstName?: string;
@@ -21,7 +18,12 @@ type InputsTypes = {
   name: string;
 };
 
-const Auth = ({ setToken }: AuthProps) => {
+type TokenContextTypes = {
+  token: string | undefined;
+  setToken: React.Dispatch<React.SetStateAction<string | undefined>>;
+};
+
+const Auth = () => {
   const [user, setUser] = useState<UserTypes>({ email: '', password: '' });
 
   const [variant, setVariant] = useState<string>('login');
@@ -37,6 +39,8 @@ const Auth = ({ setToken }: AuthProps) => {
     { label: 'Email Address', type: 'email', id: 'email', name: 'email' },
     { label: 'Password', type: 'password', id: 'password', name: 'password' },
   ]);
+
+  const context = useContext<TokenContextTypes | undefined>(TokenContext);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setUser({ ...user, [e.target.name]: e.target.value });
@@ -69,7 +73,9 @@ const Auth = ({ setToken }: AuthProps) => {
       if (variant === 'register') {
         setVariant('login');
       } else {
-        setToken(data.data.token);
+        if (context) {
+          context.setToken(data.data.token);
+        }
       }
     }
   };
@@ -89,29 +95,33 @@ const Auth = ({ setToken }: AuthProps) => {
             handleSubmit={handleSubmit}
             inputs={registerInputs}
             handleChange={handleChange}
-            buttonName='Sign up'
-          />
+          >
+            Sign up
+          </AuthForm>
         ) : (
           <AuthForm
             handleSubmit={handleSubmit}
             inputs={loginInputs}
             handleChange={handleChange}
-            buttonName='Sign in'
-          />
+          >
+            Sign in
+          </AuthForm>
         )}
         <SocialAuth />
         {variant === 'register' ? (
           <AuthFooter
             title='Already on ChatApp?'
-            buttonName='Sign in here'
             setVariant={() => setVariant('login')}
-          />
+          >
+            Sign in here
+          </AuthFooter>
         ) : (
           <AuthFooter
             title='New to ChatApp?'
-            buttonName='Create an account'
             setVariant={() => setVariant('register')}
-          />
+          >
+            Create an account
+          </AuthFooter>
         )}
       </div>
     </div>

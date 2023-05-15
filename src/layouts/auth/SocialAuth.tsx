@@ -1,4 +1,5 @@
 import { AiOutlineGoogle } from 'react-icons/ai';
+import Button from '../../components/button/Button';
 
 const SocialAuth = () => {
   return (
@@ -12,9 +13,12 @@ const SocialAuth = () => {
         </div>
       </div>
       <div className='mb-6'>
-        <button className='flex w-full cursor-pointer items-center justify-center rounded-md py-2 text-gray-500 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-100 focus:outline-offset-0'>
+        <Button
+          type='button'
+          className='flex w-full cursor-pointer items-center justify-center rounded-md py-2 text-gray-500 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-100 focus:outline-offset-0'
+        >
           <AiOutlineGoogle size={25} />
-        </button>
+        </Button>
       </div>
     </>
   );
