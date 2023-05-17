@@ -1,8 +1,7 @@
-import { useState, useContext } from 'react';
-import SocialAuth from './SocialAuth';
+import { useState } from 'react';
 import AuthForm from './AuthForm';
 import AuthFooter from './AuthFooter';
-import TokenContext from '../../context/TokenContext';
+import { useLocalStorage } from 'usehooks-ts';
 
 type UserTypes = {
   firstName?: string;
@@ -18,12 +17,12 @@ type InputsTypes = {
   name: string;
 };
 
-type TokenContextTypes = {
-  token: string | undefined;
-  setToken: React.Dispatch<React.SetStateAction<string | undefined>>;
-};
-
 const Auth = () => {
+  const [token, setToken] = useLocalStorage<string | undefined>(
+    'token',
+    undefined
+  );
+
   const [user, setUser] = useState<UserTypes>({ email: '', password: '' });
 
   const [variant, setVariant] = useState<string>('login');
@@ -39,8 +38,6 @@ const Auth = () => {
     { label: 'Email Address', type: 'email', id: 'email', name: 'email' },
     { label: 'Password', type: 'password', id: 'password', name: 'password' },
   ]);
-
-  const context = useContext<TokenContextTypes | undefined>(TokenContext);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setUser({ ...user, [e.target.name]: e.target.value });
@@ -73,9 +70,7 @@ const Auth = () => {
       if (variant === 'register') {
         setVariant('login');
       } else {
-        if (context) {
-          context.setToken(data.data.token);
-        }
+        setToken(data.data.token);
       }
     }
   };
@@ -107,7 +102,6 @@ const Auth = () => {
             Sign in
           </AuthForm>
         )}
-        <SocialAuth />
         {variant === 'register' ? (
           <AuthFooter
             title='Already on ChatApp?'

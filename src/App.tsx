@@ -1,7 +1,6 @@
 import { useEffect, useState, lazy, Suspense } from 'react';
 import jwtDecode from 'jwt-decode';
 import { useLocalStorage } from 'usehooks-ts';
-import TokenContext from './context/TokenContext';
 
 const Auth = lazy(() => import('./layouts/auth/Auth'));
 const Dashboard = lazy(() => import('./layouts/dashboard/Dashboard'));
@@ -40,20 +39,16 @@ const App = () => {
 
   if (isAuthenticated) {
     return (
-      <TokenContext.Provider key={token} value={{ token, setToken }}>
-        <Suspense fallback={Loader()}>
-          <Dashboard />
-        </Suspense>
-      </TokenContext.Provider>
+      <Suspense fallback={Loader()}>
+        <Dashboard />
+      </Suspense>
     );
   }
 
   return (
-    <TokenContext.Provider key={token} value={{ token, setToken }}>
-      <Suspense fallback={Loader()}>
-        <Auth />
-      </Suspense>
-    </TokenContext.Provider>
+    <Suspense fallback={Loader()}>
+      <Auth />
+    </Suspense>
   );
 };
 

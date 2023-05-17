@@ -4,8 +4,9 @@ type InputProps = {
   className: string;
   id: string;
   name: string;
+  value?: string;
   placeholder?: string;
-  handleChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
 };
 
 const Input = ({
@@ -14,8 +15,9 @@ const Input = ({
   className,
   id,
   name,
+  value,
   placeholder,
-  handleChange,
+  onChange,
 }: InputProps) => {
   return (
     <>
@@ -29,8 +31,9 @@ const Input = ({
         className={className}
         id={id}
         name={name}
+        value={value}
         placeholder={placeholder}
-        onChange={handleChange}
+        onChange={onChange}
       />
     </>
   );
