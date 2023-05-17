@@ -1,11 +1,23 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, lazy, Suspense } from 'react';
 import jwtDecode from 'jwt-decode';
 import { useLocalStorage } from 'usehooks-ts';
-import Auth from './layouts/auth/Auth';
-import Dashboard from './layouts/dashboard/Dashboard';
+
+const Auth = lazy(() => import('./layouts/auth/Auth'));
+const Dashboard = lazy(() => import('./layouts/dashboard/Dashboard'));
+
+const Loader = () => {
+  return (
+    <div className='h-screen flex items-center justify-center'>
+      <img src='/svg/loader.svg' alt='loader' />
+    </div>
+  );
+};
 
 const App = () => {
-  const [token, setToken] = useLocalStorage('token', '');
+  const [token, setToken] = useLocalStorage<string | undefined>(
+    'token',
+    undefined
+  );
 
   const [isAuthenticated, setIsAuthenticated] = useState(false);
 
@@ -17,15 +29,27 @@ const App = () => {
 
       if (decodedToken.exp > currentTime) {
         setIsAuthenticated(true);
+      } else {
+        setIsAuthenticated(false);
       }
+    } else {
+      setIsAuthenticated(false);
     }
   }, [token]);
 
   if (isAuthenticated) {
-    return <Dashboard />;
-  } else {
-    return <Auth setToken={setToken} />;
+    return (
+      <Suspense fallback={Loader()}>
+        <Dashboard />
+      </Suspense>
+    );
   }
+
+  return (
+    <Suspense fallback={Loader()}>
+      <Auth />
+    </Suspense>
+  );
 };
 
 export default App;

@@ -1,11 +1,7 @@
 import { useState } from 'react';
-import SocialAuth from './SocialAuth';
 import AuthForm from './AuthForm';
 import AuthFooter from './AuthFooter';
-
-type AuthProps = {
-  setToken: React.Dispatch<React.SetStateAction<string>>;
-};
+import { useLocalStorage } from 'usehooks-ts';
 
 type UserTypes = {
   firstName?: string;
@@ -21,7 +17,12 @@ type InputsTypes = {
   name: string;
 };
 
-const Auth = ({ setToken }: AuthProps) => {
+const Auth = () => {
+  const [token, setToken] = useLocalStorage<string | undefined>(
+    'token',
+    undefined
+  );
+
   const [user, setUser] = useState<UserTypes>({ email: '', password: '' });
 
   const [variant, setVariant] = useState<string>('login');
@@ -89,29 +90,32 @@ const Auth = ({ setToken }: AuthProps) => {
             handleSubmit={handleSubmit}
             inputs={registerInputs}
             handleChange={handleChange}
-            buttonName='Sign up'
-          />
+          >
+            Sign up
+          </AuthForm>
         ) : (
           <AuthForm
             handleSubmit={handleSubmit}
             inputs={loginInputs}
             handleChange={handleChange}
-            buttonName='Sign in'
-          />
+          >
+            Sign in
+          </AuthForm>
         )}
-        <SocialAuth />
         {variant === 'register' ? (
           <AuthFooter
             title='Already on ChatApp?'
-            buttonName='Sign in here'
             setVariant={() => setVariant('login')}
-          />
+          >
+            Sign in here
+          </AuthFooter>
         ) : (
           <AuthFooter
             title='New to ChatApp?'
-            buttonName='Create an account'
             setVariant={() => setVariant('register')}
-          />
+          >
+            Create an account
+          </AuthFooter>
         )}
       </div>
     </div>

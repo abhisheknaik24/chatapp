@@ -1,16 +1,22 @@
+import Button from '../../components/button/Button';
+
 type AuthFooterProps = {
+  children: React.ReactNode;
   title: string;
-  buttonName: string;
   setVariant: () => void;
 };
 
-const AuthFooter = ({ title, buttonName, setVariant }: AuthFooterProps) => {
+const AuthFooter = ({ children, title, setVariant }: AuthFooterProps) => {
   return (
     <div className='text-center text-sm font-semibold text-gray-500'>
       <span className='mr-1'>{title}</span>
-      <button className='underline outline-none' onClick={setVariant}>
-        {buttonName}
-      </button>
+      <Button
+        type='button'
+        className='underline outline-none'
+        onClick={setVariant}
+      >
+        {children}
+      </Button>
     </div>
   );
 };
